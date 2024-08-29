@@ -13,15 +13,29 @@ FILE_EXTENSION_LENGTH_LIMIT = 4
 PATH_LENGTH_LIMIT = 4096 - FILE_NAME_LENGTH_LIMIT - FILE_EXTENSION_LENGTH_LIMIT - 2
 
 class File_Extension(models.Model):
-    extension = models.CharField(max_length=4)
-    extension.unique = True
+	extension = models.CharField("extension", max_length=4)
+	extension.unique = True
+
+	def __str__(self):
+		return self.extension
 
 class Embroidery_Machine(models.Model):
-	manufacturer = models.CharField(max_length=30)
-	model = models.CharField(max_length=30)
+	manufacturer = models.CharField("manufacturer", max_length=30)
+	model = models.CharField("model", max_length=30)
+	info = models.CharField("info", max_length=100)
+	info.null = True
+	info.blank = True
+
+	def __str__(self):
+		return '%s %s (%s)' % (self.manufacturer, self.model, self.info)
 
 class Embroidery_File(models.Model):
-    name = models.CharField(max_length=FILE_NAME_LENGTH_LIMIT)
-    ext = models.ForeignKey(File_Extension)
-    path = models.CharField(max_length=PATH_LENGTH_LIMIT)
-    on_machine = models.ForeignKey(Embroidery_Machine)
+	name = models.CharField("name", max_length=FILE_NAME_LENGTH_LIMIT)
+	ext = models.ForeignKey(File_Extension, on_delete=models.DO_NOTHING)
+	path = models.CharField("path", max_length=PATH_LENGTH_LIMIT)
+	on_machine = models.ForeignKey(Embroidery_Machine, on_delete=models.DO_NOTHING)
+	on_machine.null = True
+	on_machine.blank = True
+
+	def __str__(self):
+		return '%s.%s (%s)' % (self.name, self.ext, self.path)
